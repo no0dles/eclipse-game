@@ -36,7 +36,7 @@ export function renderHexagon(coordinate: Coordinate) {
   return hexagon
 }
 
-export function renderTile(tile: GameMapTile) {
+export function renderTile(players: Player[],tile: GameMapTile) {
   const hexagon = renderHexagon(tile.coordinate);
 
   for(const border of tile.borders) {
@@ -63,7 +63,8 @@ export function renderTile(tile: GameMapTile) {
   const center = new Graphics();
 
   if (tile.influence) {
-    center.beginFill(tile.influence.player.color);
+    const player = players.find(p => p.id === tile.influence.playerId);
+    center.beginFill(player.color);
   } else {
     center.lineStyle(2, 0xFFFFFF);
   }

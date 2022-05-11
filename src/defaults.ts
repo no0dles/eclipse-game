@@ -111,17 +111,17 @@ export function influenceTrack(player: Player): InfluenceTrack[] {
   return [
     {influence: null, moneyCost: 0},
     {influence: null, moneyCost: 0},
-    {influence: {player}, moneyCost: 1},
-    {influence: {player}, moneyCost: 2},
-    {influence: {player}, moneyCost: 3},
-    {influence: {player}, moneyCost: 5},
-    {influence: {player}, moneyCost: 7},
-    {influence: {player}, moneyCost: 10},
-    {influence: {player}, moneyCost: 13},
-    {influence: {player}, moneyCost: 17},
-    {influence: {player}, moneyCost: 21},
-    {influence: {player}, moneyCost: 25},
-    {influence: {player}, moneyCost: 30},
+    {influence: {playerId: player.id}, moneyCost: 1},
+    {influence: {playerId: player.id}, moneyCost: 2},
+    {influence: {playerId: player.id}, moneyCost: 3},
+    {influence: {playerId: player.id}, moneyCost: 5},
+    {influence: {playerId: player.id}, moneyCost: 7},
+    {influence: {playerId: player.id}, moneyCost: 10},
+    {influence: {playerId: player.id}, moneyCost: 13},
+    {influence: {playerId: player.id}, moneyCost: 17},
+    {influence: {playerId: player.id}, moneyCost: 21},
+    {influence: {playerId: player.id}, moneyCost: 25},
+    {influence: {playerId: player.id}, moneyCost: 30},
   ];
 }
 

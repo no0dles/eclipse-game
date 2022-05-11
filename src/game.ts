@@ -17,7 +17,6 @@ export interface Game {
   events: GameEvent[];
   board: GameBoard;
   tiles: GameTile[];
-  currentPlayerIndex: number;
 }
 
 const playerColors = [
@@ -181,7 +180,6 @@ export function startGame(gamePlayers: GamePlayer[]): Game {
 
   return {
     events: [],
-    currentPlayerIndex: 0,
     tiles: getGameTiles(players.length),
     board: {
       players,
@@ -223,7 +221,7 @@ export function startGame(gamePlayers: GamePlayer[]): Game {
                 populations: species.erdaniEmpire.startingSetup.tile.populations,
               },
               objects: species.erdaniEmpire.startingSetup.objects,
-              influence: {player},
+              influence: {playerId: player.id},
               borders: gameMapTileBorders({
 
               }),
@@ -239,7 +237,7 @@ export function startGame(gamePlayers: GamePlayer[]): Game {
 
 export function getPossibleExploreCoordinates(game: Game, player: Player): Coordinate[] {
   const playerTiles = game.board.map.tiles
-    .filter(t => t.influence?.player.id === player.id)
+    .filter(t => t.influence?.playerId === player.id)
   const coordinates: Coordinate[] = [];
 
   // TODO check for available tiles in outer sector
@@ -304,11 +302,6 @@ export function getSectorForCoordinate(coordinate: Coordinate): GameTileSector {
 }
 
 export function triggerTilePick(game: Game, event: PlayerPlaceTileEvent): Game {
-  const currentPlayer = game.board.players[game.currentPlayerIndex];
-  if (currentPlayer.id !== event.playerId) {
-    throw new Error('not players turn');
-  }
-
   const newGameTile: GameMapTile = {
     tile: event.tile,
     influence: null,
@@ -320,17 +313,15 @@ export function triggerTilePick(game: Game, event: PlayerPlaceTileEvent): Game {
     borders: gameMapTileBorders({}),
   };
 
+  const player = game.board.players.find(p => p.id === event.playerId);
   if (event.influence) {
-    const nextInfluence = currentPlayer.influenceTrack.find(t => !!t.influence);
+    const nextInfluence = player.influenceTrack.find(t => !!t.influence);
     newGameTile.influence = nextInfluence.influence;
     nextInfluence.influence = null;
   }
 
-  game.currentPlayerIndex++;
-
   return {
     tiles: game.tiles,
-    currentPlayerIndex: game.currentPlayerIndex % game.board.players.length,
     board: {
       ...game.board,
       map: {
@@ -350,19 +341,13 @@ export function triggerTilePick(game: Game, event: PlayerPlaceTileEvent): Game {
 }
 
 export function triggerExploreAction(game: Game, event: PlayerExploreActionEvent): { game: Game, tile: GameTile } {
-  const currentPlayer = game.board.players[game.currentPlayerIndex];
-  if (currentPlayer.id !== event.playerId) {
-    throw new Error('not players turn');
-  }
-
   const sector = getSectorForCoordinate(event.coordinate);
   const tiles = game.tiles.filter(t => t.sector === sector);
   const tileIndex = Math.floor(Math.random()*tiles.length);
   const newTile = tiles[tileIndex]
-  console.log(newTile, sector, game.tiles)
+
   return {
     game: {
-      currentPlayerIndex: game.currentPlayerIndex,
       board: game.board,
       events: [...game.events, event, {
         type: 'game-tile-draw',

@@ -180,8 +180,7 @@ export interface ColonyShip {
 }
 
 export interface PlayerInfluence {
-  // playerId: string;
-  player: Player;
+  playerId: string;
 }
 
 export interface SpeciesTray {
